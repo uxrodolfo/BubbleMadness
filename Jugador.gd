@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-# --- 1. CONFIGURATION (Must be at the top) ---
+# --- 1. Prueba xd ---
 @export var speed: float = 400.0
 @export var projectile_scene : PackedScene = preload("res://Proyectil.tscn")
 
