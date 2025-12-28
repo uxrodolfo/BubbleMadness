@@ -1,0 +1,53 @@
+[gd_scene load_steps=5 format=3 uid="uid://o6ug8rdebsi3"]
+
+[ext_resource type="Script" uid="uid://cm2g2rytxxwx7" path="res://Jugador.gd" id="1_pfvk3"]
+[ext_resource type="Texture2D" uid="uid://dls4gkb8fsdqp" path="res://Sprites/Bubble.png" id="2_pfvk3"]
+[ext_resource type="PackedScene" uid="uid://co06myyyhq7pa" path="res://Proyectil.tscn" id="3_ucnt4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w2bje"]
+size = Vector2(131, 85)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Jugador" type="CharacterBody2D" parent="."]
+position = Vector2(80, 80)
+script = ExtResource("1_pfvk3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Jugador"]
+scale = Vector2(1.8536587, 1.8536586)
+texture = ExtResource("2_pfvk3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Jugador"]
+shape = SubResource("RectangleShape2D_w2bje")
+
+[node name="PuntoDisparo" type="Marker2D" parent="Jugador"]
+
+[node name="TimerDisparo" type="Timer" parent="Jugador"]
+wait_time = 2.0
+
+[node name="Proyectil" parent="." instance=ExtResource("3_ucnt4")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ContadorLabel" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 220
+text = "GO!!!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ReproductorMusica" type="AudioStreamPlayer2D" parent="."]
+unique_name_in_owner = true
+
+[connection signal="timeout" from="Jugador/TimerDisparo" to="Jugador" method="_on_timer_disparo_timeout"]
