@@ -104,11 +104,11 @@ func _physics_process(_delta):
 		screen_height - half_height
 	)
 	
-		# --- CONTROL DEL ÁNGULO DE TIRO ---
+	# Adjust angle with K or I
 	var delta_angulo = 0.0
-	if Input.is_key_pressed(KEY_A):
+	if Input.is_key_pressed(KEY_K):
 		delta_angulo += 1
-	if Input.is_key_pressed(KEY_D):
+	if Input.is_key_pressed(KEY_I):
 		delta_angulo -= 1
 
 	angulo_tiro += delta_angulo * velocidad_angulo * _delta
