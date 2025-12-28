@@ -25,7 +25,15 @@ shape = SubResource("RectangleShape2D_w2bje")
 [node name="TimerDisparo" type="Timer" parent="Jugador"]
 wait_time = 2.0
 
+[node name="BurbujaCargada" type="Sprite2D" parent="Jugador"]
+position = Vector2(50, 7)
+
+[node name="BurbujaPreview" type="Sprite2D" parent="Jugador"]
+position = Vector2(-60, 30)
+
 [node name="Proyectil" parent="." instance=ExtResource("3_ucnt4")]
+speed = 500.0
+detection_distance = 90.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
