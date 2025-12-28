@@ -8,6 +8,7 @@ extends Area2D
 @export var stick_offset: float = 50.0 
 
 # --- STATE VARIABLES ---
+var direction: Vector2 = Vector2.RIGHT
 var color_type: int = 0
 var is_stuck: bool = false
 
@@ -26,7 +27,7 @@ func _ready():
 func _process(delta):
 	if not is_stuck:
 		speed += acceleration * delta
-		position.x += speed * delta
+		global_position += direction.normalized() * speed * delta
 		
 		# Anclaje a la derecha (Wall)
 		if position.x > 1180:

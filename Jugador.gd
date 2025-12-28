@@ -1,12 +1,21 @@
 extends CharacterBody2D
 
-# --- 1. Prueba xd ---
+# --- uSABLE VARIABLES ---
+# @export makes a variable visible and usable
 @export var speed: float = 400.0
 @export var projectile_scene : PackedScene = preload("res://Proyectil.tscn")
 
 # MUSIC RESOURCES
 @export var track_1 : AudioStream = preload("res://Music/level_music1.wav")
 @export var track_2 : AudioStream = preload("res://Music/level_music2.wav")
+
+# SHOOT ANGLES
+@export var angulo_tiro := 0.0        # en grados
+@export var velocidad_angulo := 90.0  # grados por segundo
+@export var angulo_min := -75.0
+@export var angulo_max := 75.0
+
+
 
 # BUBBLE SYSTEM VISUALS
 var bubble_images = [
@@ -73,17 +82,41 @@ func _process(_delta):
 		$BurbujaCargada.scale = Vector2(pulse, pulse)
 
 func _physics_process(_delta):
-	# Si no ha empezado el juego, no permitimos movimiento
+	# We can't move if the game hasn't started
 	if not is_game_started:
 		return
 
 	var direction = 0
 	if Input.is_key_pressed(KEY_W): direction -= 1
 	if Input.is_key_pressed(KEY_S): direction += 1
-	
-	# Aquí usamos 'speed'. Asegúrate de que no esté en 0 en el Inspector.
+
+	# VERTICAL MOVEMENT
 	velocity.y = direction * speed
 	move_and_slide()
+
+	# To make the character unable to leave the active screen
+	var screen_height = get_viewport_rect().size.y
+	var half_height = $CollisionShape2D.shape.extents.y
+
+	global_position.y = clamp(
+		global_position.y,
+		half_height,
+		screen_height - half_height
+	)
+	
+		# --- CONTROL DEL ÁNGULO DE TIRO ---
+	var delta_angulo = 0.0
+	if Input.is_key_pressed(KEY_A):
+		delta_angulo += 1
+	if Input.is_key_pressed(KEY_D):
+		delta_angulo -= 1
+
+	angulo_tiro += delta_angulo * velocidad_angulo * _delta
+	angulo_tiro = clamp(angulo_tiro, angulo_min, angulo_max)
+
+	# Rotamos el punto de disparo (visual)
+	$PuntoDisparo.rotation_degrees = angulo_tiro
+
 
 # --- 4. SHOOTING SYSTEM ---
 func _on_timer_disparo_timeout():
@@ -92,13 +125,21 @@ func _on_timer_disparo_timeout():
 func shoot():
 	if is_game_started:
 		var p = projectile_scene.instantiate()
-		p.color_type = current_color_type 
+		p.color_type = current_color_type
+
+		# Posición inicial
 		p.global_position = $PuntoDisparo.global_position
+
+		# Dirección según ángulo
+		var dir = Vector2.RIGHT.rotated(deg_to_rad(angulo_tiro))
+		p.direction = dir   # ← el proyectil debe usar esto
+
 		get_tree().root.add_child(p)
-		
+
 		current_color_type = next_color_type
 		next_color_type = randi() % 3
 		update_bubble_visuals()
+
 
 # --- 5. AUDIO SYSTEM (The missing piece) ---
 func pick_and_play_music():
